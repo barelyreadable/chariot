@@ -29,7 +29,7 @@ export default function Login() {
             type="email"
             name="email"
             value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })}
+            onChange={e => setForm(prev => ({ ...prev, email: e.target.value }))}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
           />
@@ -40,18 +40,15 @@ export default function Login() {
             type="password"
             name="password"
             value={form.password}
-            onChange={e => setForm({ ...form, password: e.target.value })}
+            onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
           />
         </label>
-        <button
-          type="submit"
-          className="w-full bg-secondary text-white font-bold py-2 rounded-md hover:bg-accent transition"
-        >
+        <button type="submit" className="w-full bg-secondary text-white font-bold py-2 rounded-md hover:bg-accent transition">
           Sign In
         </button>
       </form>
     </div>
-);
+  );
 }
