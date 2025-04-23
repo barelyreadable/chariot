@@ -1,4 +1,4 @@
 import apiClient from '../utils/apiClient';
 
 export const setupDriver = data => apiClient.post('/drivers', data);
-export const getDrivers = () => apiClient.get('/drivers');
+export const getDriverCarpools = () => apiClient.get('/carpools/mine');
