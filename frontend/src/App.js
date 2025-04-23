@@ -4,13 +4,14 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Login from './components/Login';
-import EventForm from './components/EventForm';
 import EventList from './components/EventList';
+import EventForm from './components/EventForm';
 import DriverSetup from './components/DriverSetup';
-import RiderBooking from './components/RiderBooking';
-import Profile from './components/Profile';
-import CoRiders from './components/CoRiders';
+import DriverEventOptIn from './components/DriverEventOptIn';
 import DriverCarpoolList from './components/DriverCarpoolList';
+import RiderBooking from './components/RiderBooking';
+import CoRiders from './components/CoRiders';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -20,23 +21,29 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
 
+          {/* Admin */}
+          <Route path="/events" element={
+            <ProtectedRoute roles={['admin']}><EventList /></ProtectedRoute>
+          } />
           <Route path="/events/new" element={
             <ProtectedRoute roles={['admin']}><EventForm /></ProtectedRoute>
           } />
           <Route path="/events/:id/edit" element={
             <ProtectedRoute roles={['admin']}><EventForm /></ProtectedRoute>
           } />
-          <Route path="/events" element={
-            <ProtectedRoute roles={['admin']}><EventList /></ProtectedRoute>
-          } />
 
+          {/* Driver */}
           <Route path="/driver-setup" element={
             <ProtectedRoute roles={['driver']}><DriverSetup /></ProtectedRoute>
+          } />
+          <Route path="/driver-optin" element={
+            <ProtectedRoute roles={['driver']}><DriverEventOptIn /></ProtectedRoute>
           } />
           <Route path="/my-carpool/:eventId" element={
             <ProtectedRoute roles={['driver']}><DriverCarpoolList /></ProtectedRoute>
           } />
 
+          {/* Rider */}
           <Route path="/book" element={
             <ProtectedRoute roles={['rider']}><RiderBooking /></ProtectedRoute>
           } />
@@ -44,6 +51,7 @@ function App() {
             <ProtectedRoute roles={['rider']}><CoRiders /></ProtectedRoute>
           } />
 
+          {/* Profile */}
           <Route path="/profile" element={
             <ProtectedRoute roles={['admin','driver','rider']}><Profile /></ProtectedRoute>
           } />
