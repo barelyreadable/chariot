@@ -1,0 +1,61 @@
+carpool-app/
+├── build.sh                # Script to build Docker images and run migrations
+├── docker-compose.yml      # Compose file defining services (db, backend, frontend)
+├── README.md               # Project overview, setup, deployment instructions
+├── backend/                # Backend service directory
+│   ├── Dockerfile          # Docker image definition for Node.js API
+│   ├── .env.example        # Sample environment variables for backend
+│   ├── package.json        # NPM dependencies and scripts
+│   └── src/                # Source code for backend
+│       ├── server.js       # Express server setup
+│       ├── db/             # Database connection and migrations
+│       │   ├── index.js    # Exports configured pg Pool
+│       │   └── migrations/ # SQL scripts to create tables
+│       │       ├── create_users_table.sql
+│       │       └── create_events_table.sql
+│       ├── middleware/     # Express middleware (auth, roles, rate limiter, validation)
+│       │   ├── auth.js
+│       │   ├── roles.js
+│       │   ├── rateLimiter.js
+│       │   └── validate.js
+│       ├── routes/         # API route definitions
+│       │   ├── auth.js
+│       │   ├── drivers.js
+│       │   ├── events.js
+│       │   ├── riders.js
+│       │   └── carpools.js
+│       └── controllers/    # Route handler logic
+│           ├── authController.js
+│           ├── driverController.js
+│           ├── eventController.js
+│           ├── riderController.js
+│           └── carpoolController.js
+└── frontend/               # Frontend React application
+    ├── Dockerfile          # Multi-stage build for React + Nginx
+    ├── .env.example        # Sample environment variables for frontend
+    ├── package.json        # NPM dependencies and scripts
+    ├── public/             # Static assets
+    │   ├── index.html      # HTML template
+    │   └── Chariots.png    # Logo image used in Header
+    └── src/                # React source code
+        ├── index.js        # App entry point
+        ├── index.css       # Tailwind CSS imports and global styles
+        ├── tailwind.config.js # Tailwind theme configuration
+        ├── App.js          # Main router and component layout
+        ├── api/            # Axios API client modules
+        │   ├── auth.js
+        │   ├── drivers.js
+        │   ├── events.js
+        │   ├── riders.js
+        │   └── carpools.js
+        ├── contexts/       # React Context for auth state
+        │   └── AuthContext.js
+        ├── components/     # UI components
+        │   ├── Header.js
+        │   ├── Login.js
+        │   ├── ProtectedRoute.js
+        │   ├── DriverSetup.js
+        │   ├── EventForm.js
+        │   └── RiderBooking.js
+        └── utils/          # Utility modules
+            └── apiClient.js
