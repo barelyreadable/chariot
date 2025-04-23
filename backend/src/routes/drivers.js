@@ -1,3 +1,4 @@
+// backend/src/routes/drivers.js
 const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();
@@ -5,6 +6,7 @@ const driverController = require('../controllers/driverController');
 const validate = require('../middleware/validate');
 const { authorizeRoles } = require('../middleware/roles');
 
+// Create/update profile
 router.post(
   '/',
   authorizeRoles('driver'),
@@ -17,10 +19,7 @@ router.post(
   driverController.createOrUpdate
 );
 
-router.get(
-  '/',
-  authorizeRoles('driver','admin'),
-  driverController.list
-);
+// List all drivers
+router.get('/', authorizeRoles('driver','admin'), driverController.list);
 
 module.exports = router;
