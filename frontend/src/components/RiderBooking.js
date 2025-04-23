@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import apiClient from '../utils/apiClient';
+import { getEvents } from '../api/events';
+import { getCarpools } from '../api/carpools';
+import { joinCarpool, autoMatch } from '../api/riders';
 
 export default function RiderBooking() {
   const [events, setEvents] = useState([]);
@@ -7,35 +9,27 @@ export default function RiderBooking() {
   const [carpools, setCarpools] = useState([]);
   const [message, setMessage] = useState('');
 
-  // Load events on mount
   useEffect(() => {
-    apiClient.get('/events').then(({ data }) => setEvents(data));
+    getEvents().then(({ data }) => setEvents(data));
   }, []);
 
-  // Load carpools when event changes
-  const loadCarpools = eventId => {
-    setSelectedEvent(eventId);
-    apiClient.get(`/carpools/${eventId}`).then(({ data }) => setCarpools(data));
+  const handleEventChange = e => {
+    const eid = e.target.value;
+    setSelectedEvent(eid);
+    if (eid) getCarpools(eid).then(({ data }) => setCarpools(data));
+    else setCarpools([]);
   };
 
-  // Rider manual join
-  const joinCarpool = async carpoolId => {
-    try {
-      await apiClient.post(`/riders/join/${carpoolId}`);
-      setMessage('Joined carpool successfully!');
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Error joining carpool');
-    }
+  const handleJoin = id => {
+    joinCarpool(id)
+      .then(() => setMessage('Successfully joined!'))
+      .catch(err => setMessage(err.response?.data?.message || 'Join failed'));
   };
 
-  // Rider auto-match
-  const autoMatch = async () => {
-    try {
-      const { data } = await apiClient.post(`/riders/automatch/${selectedEvent}`);
-      setMessage(`Auto-matched into carpool ${data.carpool_id}`);
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Auto-match failed');
-    }
+  const handleAuto = () => {
+    autoMatch(selectedEvent)
+      .then(({ data }) => setMessage(`Auto-matched to carpool ${data.carpool_id}`))
+      .catch(err => setMessage(err.response?.data?.message || 'Auto-match failed'));
   };
 
   return (
@@ -43,55 +37,33 @@ export default function RiderBooking() {
       <h2 className="text-xl font-bold text-primary mb-4">Book a Ride</h2>
       {message && <div className="text-secondary mb-2">{message}</div>}
 
-      <label className="block mb-4">
-        Select Event:
-        <select
-          className="mt-1 block w-full border-gray-300 rounded-md"
-          value={selectedEvent}
-          onChange={e => loadCarpools(e.target.value)}
-        >
-          <option value="">--Choose Event--</option>
-          {events.map(ev => (
-            <option key={ev.id} value={ev.id}>{ev.title}</option>
-          ))}
-        </select>
-      </label>
+      <label className="block text-gray-700">Select Event</label>
+      <select value={selectedEvent} onChange={handleEventChange} className="mt-1 block w-full mb-4">
+        <option value="">--Choose Event--</option>
+        {events.map(ev => <option key={ev.id} value={ev.id}>{ev.title}</option>)}
+      </select>
 
       {selectedEvent && (
-        <div className="mb-4">
-          <button
-            onClick={autoMatch}
-            className="bg-secondary text-white font-bold py-2 px-4 rounded-md hover:bg-accent transition"
-          >
-            Auto-Match Me
-          </button>
-        </div>
+        <button onClick={handleAuto} className="bg-secondary text-white font-bold py-2 px-4 rounded-md hover:bg-accent transition mb-4">
+          Auto-Match Me
+        </button>
       )}
 
-      {carpools.length > 0 && (
-        <ul className="space-y-2">
-          {carpools.map(c => (
-            <li
-              key={c.id}
-              className="flex justify-between items-center border p-2 rounded-md"
-            >
-              <span>
-                {c.name} ({c.vehicle_info}), Seats: {c.capacity}
-              </span>
-              <button
-                onClick={() => joinCarpool(c.id)}
-                className="bg-secondary text-white font-bold py-1 px-3 rounded-md hover:bg-accent transition"
-              >
-                Join
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {selectedEvent && carpools.length === 0 && (
-        <p>No drivers have subscribed yet. Try auto-match.</p>
-      )}
+      {carpools.length > 0 ? (
+        carpools.map(c => (
+          <div key={c.id} className="flex justify-between items-center border p-2 mb-2 rounded-md">
+            <div>
+              <div className="font-bold">{c.name}</div>
+              <div className="text-sm text-gray-600">Seats left: {c.capacity}</div>
+            </div>
+            <button onClick={() => handleJoin(c.id)} className="bg-secondary text-white font-bold py-1 px-3 rounded-md hover:bg-accent transition">
+              Join
+            </button>
+          </div>
+        ))
+      ) : selectedEvent ? (
+        <p>No available drivers; try auto-match.</p>
+      ) : null}
     </div>
-  );
+);
 }
