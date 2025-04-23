@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 exports.signup = async (req, res) => {
   const { email, password, role } = req.body;
   const hashed = await bcrypt.hash(password, 10);
-  const { rows } = await pool.query(
-    'INSERT INTO users(email,password,role) VALUES($1,$2,$3) RETURNING id,role',
-    [email, hashed, role]
-  );
+const { rows } = await pool.query(
+  'INSERT INTO users(email,password,role,profile_picture,greggs_pref,drink_pref) VALUES($1,$2,$3,$4,$5,$6) RETURNING id,role',
+  [email, hashed, role, profilePic, req.body.greggs_pref, req.body.drink_pref]
+);
   const user = rows[0];
   const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '8h' });
   res.json({ token });
