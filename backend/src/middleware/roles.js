@@ -1,3 +1,4 @@
+// backend/src/middleware/roles.js
 function authorizeRoles(...allowed) {
   return (req, res, next) => {
     if (!allowed.includes(req.user.role)) {
