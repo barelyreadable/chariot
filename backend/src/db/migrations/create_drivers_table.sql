@@ -1,1 +1,7 @@
-
+CREATE TABLE drivers (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  vehicle_info TEXT NOT NULL,
+  capacity INTEGER NOT NULL
+);
