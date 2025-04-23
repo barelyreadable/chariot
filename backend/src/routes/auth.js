@@ -1,3 +1,4 @@
+// backend/src/routes/auth.js
 const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();
@@ -15,7 +16,7 @@ router.post(
     body('password').isLength({ min: 6 }),
     body('role').isIn(['admin','driver','rider']),
     body('greggs_pref').optional().isIn(['Bacon Roll','Sausage Roll','Omlette Roll','Bacon Sausage Roll','Bacon Omlette Roll','Sausage Omlette Roll','Daddy Roll','Porridge']),
-    body('drink_pref').optional().isIn(['Latte','Cappucino','Black Coffee','White Coffee','Orange Juice','Water']),
+    body('drink_pref').optional().isIn(['Latte','Cappucino','Black Coffee','White Coffee','Orange Juice','Water'])
   ],
   validate,
   authController.signup
@@ -24,30 +25,20 @@ router.post(
 // Login
 router.post(
   '/login',
-  [
-    body('email').isEmail(),
-    body('password').exists()
-  ],
+  [ body('email').isEmail(), body('password').exists() ],
   validate,
   authController.login
 );
 
-// Get current user
-router.get(
-  '/me',
-  verifyToken,
-  authController.me
-);
+// Fetch profile
+router.get('/me', verifyToken, authController.me);
 
 // Update profile
 router.put(
   '/profile',
   verifyToken,
   upload.single('profile_picture'),
-  [
-    body('greggs_pref').optional().isString(),
-    body('drink_pref').optional().isString(),
-  ],
+  [ body('greggs_pref').optional().isString(), body('drink_pref').optional().isString() ],
   validate,
   authController.updateProfile
 );
