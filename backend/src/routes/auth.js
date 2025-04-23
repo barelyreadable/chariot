@@ -25,4 +25,11 @@ router.post(
   authController.login
 );
 
+router.put(
+  '/profile',
+  verifyToken,
+  upload.single('profile_picture'),
+  authController.updateProfile
+);
+
 module.exports = router;
