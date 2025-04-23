@@ -95,27 +95,3 @@ export default function RiderBooking() {
     </div>
   );
 }
-
-{
-  "name": "carpool-backend",
-  "version": "1.0.0",
-  "main": "src/server.js",
-  "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.7.3",
-    "dotenv": "^16.0.0",
-    "cors": "^2.8.5",
-    "helmet": "^6.0.1",
-    "express-rate-limit": "^6.5.1",
-    "jsonwebtoken": "^9.0.0",
-    "bcrypt": "^5.1.0",
-    "express-validator": "^7.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
-  }
-}
