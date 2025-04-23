@@ -1,1 +1,3 @@
-
+ALTER TABLE users
+ADD COLUMN greggs_pref VARCHAR(50) DEFAULT 'None',
+ADD COLUMN drink_pref VARCHAR(50) DEFAULT 'None';
