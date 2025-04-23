@@ -1,23 +1,18 @@
 import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
 export default function Login() {
   const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
-  const history = useHistory();
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-  };
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       await login(form.email, form.password);
-      history.push('/events');
+      navigate('/events');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -34,7 +29,7 @@ export default function Login() {
             type="email"
             name="email"
             value={form.email}
-            onChange={handleChange}
+            onChange={e => setForm({ ...form, email: e.target.value })}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
           />
@@ -45,7 +40,7 @@ export default function Login() {
             type="password"
             name="password"
             value={form.password}
-            onChange={handleChange}
+            onChange={e => setForm({ ...form, password: e.target.value })}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary"
           />
@@ -58,5 +53,5 @@ export default function Login() {
         </button>
       </form>
     </div>
-  );
+);
 }
